@@ -44,11 +44,9 @@ let timeId=setInterval(clickHandle,5000)
 $('#box').mouseenter(() => {
     clearInterval(timeId)
     $('#focus').addClass('active')
-    $('#focus').removeClass('miss')
 })
 $('#box').mouseleave(() => {
     timeId=setInterval(clickHandle,5000)
-    $('#focus').addClass('miss')
     $('#focus').removeClass('active')
     
 })

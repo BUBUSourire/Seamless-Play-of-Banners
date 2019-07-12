@@ -45,10 +45,12 @@ ul,ol {
     opacity: 1;
     box-shadow: -1px 0px 9px 1px rgba(255,255,255,1);
 }
-.miss {
+
+.focus>span {
     display: none;
 }
 .focus.active>span {
+    display: block;
     position: absolute;
     width: 40px;
     height: 40px;
