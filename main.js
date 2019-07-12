@@ -1,65 +1,68 @@
-let n
-ini()//初始化,banner默认状态
-let timeId = setTime()
+function my$(id) {
+    return document.getElementById(id);
+};
 
-//创建轮播
-function setTime(){
-    return setInterval(() => {
-        makeLeave(getImage(n))
-            .one('transitionend', (e) => {
-                makeEnter($(e.currentTarget))
-            })
-        makeCurrent(getImage(n + 1))
-        n += 1
-    }, 3000)
+
+let $picWidth = $('#banner').width()//获取图片宽度
+let $picNum = $('#bannerPic').children('li')//获取最初的banner的个数
+let $ulObj = $('#bannerPic')
+
+//克隆第一个banner图放在最后，克隆最后一张banner到最前面
+let firstBannerPic = $picNum.eq(0).clone(true).appendTo($ulObj)
+let $lists = $('#bannerPic>li')//获取克隆后banner的个数
+
+//循环point注册点击事件
+let $points = $('#point>li')
+for (let i = 0; i < $points.length; i++) {
+    $points.eq(i).on('click', () => {
+        $('#bannerPic').css({ transform: 'translateX(' + i * (-$picWidth) + 'px)' })
+    })
 }
 
-//鼠标悬停离开
-$('.banner').on('mouseenter', () => {
-    window.clearInterval(timeId)
+//右侧焦点切换
+let current = 0 //添加索引
+
+$('#right').on('click', clickHandle)
+function clickHandle () {
+    if (current === $lists.length - 1) {
+        current = 0;
+        $('#bannerPic').hide()
+        .offset()
+        $('#bannerPic').css({ transform: 'translateX(' + 0 + 'px)' })
+        .show()
+    }
+    current++
+    $('#bannerPic').css({ transform: 'translateX(' + (-current) * ($picWidth) + 'px)' })
+}
+//当用户点击最后一张banner切换时看到的第一张banner其实可第一张banner的克隆
+//当索引为5即看到最后一张banner时，current=5立即跳进if，隐藏bannerPic同时offset重新设置其位置
+
+//自动轮播
+let timeId=setInterval(clickHandle,5000)
+
+//鼠标进入离开
+$('#box').mouseenter(() => {
+    clearInterval(timeId)
+    $('#focus').addClass('active')
+    $('#focus').removeClass('miss')
 })
-$('.banner').on('mouseleave', () => {
-    timeId=setTime()
+$('#box').mouseleave(() => {
+    timeId=setInterval(clickHandle,5000)
+    $('#focus').addClass('miss')
+    $('#focus').removeClass('active')
+    
 })
 
+//左边焦点切换
+$('#left').on('click',() => {
+    if(current===0){
+        current=$lists.length-1
+        $('#bannerPic').hide()
+        .offset()
+        $('#bannerPic').css({ transform: 'translateX(' + (-current) * ($picWidth) + 'px)' })
+        .show()
+    }
+    current--
+    $('#bannerPic').css({ transform: 'translateX(' + (-current) * ($picWidth) + 'px)' })
+})
 
-
-/*
-=====封装=====
-*/
-
-//获取第n个image
-function getImage(n) {
-    return $(`.banner-inner>img:nth-child(${x(n)})`)
-    //`.banner-inner>img:nth-child(n)`这里的n是字符串'n',不是数字
-}
-
-//固定n的值
-function x(n) {
-    if (n > 3) {
-        n = n % 3
-        if (n === 0) {
-            n = 3
-        }
-    }//n=1 2 3
-    return n
-}
-
-//初始化
-function ini() {
-    n = 1
-    $(`.banner-inner>img:nth-child(${n})`).addClass('current')
-        .siblings().addClass('enter')
-}
-
-//封装状态
-function makeCurrent($node) {
-    $node.removeClass('enter leave').addClass('current')
-}
-function makeLeave($node) {
-    $node.removeClass('enter current').addClass('leave')
-    return $node//链式操作，传入什么，返回什么，如果不加return，那makeCurrent的返回值是undefined
-}
-function makeEnter($node) {
-    $node.removeClass('leave current').addClass('enter')
-}
