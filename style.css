@@ -24,6 +24,11 @@ ul,ol {
     display: flex;
     transition: all 1s;
 }
+.banner>ul>li{
+    width:640px;
+    height: 340px;
+    flex-shrink: 0;
+}
 .point {
     display: flex;
     position: absolute;

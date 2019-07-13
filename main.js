@@ -11,16 +11,19 @@ let $ulObj = $('#bannerPic')
 let firstBannerPic = $picNum.eq(0).clone(true).appendTo($ulObj)
 let $lists = $('#bannerPic>li')//获取克隆后banner的个数
 
+let current = 0 //添加索引
+
 //循环point注册点击事件
 let $points = $('#point>li')
 for (let i = 0; i < $points.length; i++) {
     $points.eq(i).on('click', () => {
+        current=i 
         $('#bannerPic').css({ transform: 'translateX(' + i * (-$picWidth) + 'px)' })
     })
 }
 
+
 //右侧焦点切换
-let current = 0 //添加索引
 
 $('#right').on('click', clickHandle)
 function clickHandle () {
@@ -42,14 +45,15 @@ let timeId=setInterval(clickHandle,5000)
 
 //鼠标进入离开
 $('#box').mouseenter(() => {
-    clearInterval(timeId)
+   clearInterval(timeId)
     $('#focus').addClass('active')
 })
 $('#box').mouseleave(() => {
-    timeId=setInterval(clickHandle,5000)
+   timeId=setInterval(clickHandle,5000)
     $('#focus').removeClass('active')
     
 })
+
 
 //左边焦点切换
 $('#left').on('click',() => {
